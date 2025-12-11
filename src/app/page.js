@@ -1,6 +1,11 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 
+export const metadata = {
+  title: 'Welcome',
+};
+
+
 export default function Home() {
   return (
     <div className={styles.page}>
@@ -14,6 +19,7 @@ export default function Home() {
           priority
         />
         <div className={styles.intro}>
+          
           <h1>To get started, edit the page.js file.</h1>
           <p>
             Looking for a starting point or more instructions? Head over to{" "}
@@ -54,7 +60,6 @@ export default function Home() {
           <a
             className={styles.secondary}
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
             rel="noopener noreferrer"
           >
             Documentation
