@@ -1,71 +1,53 @@
-import Image from "next/image";
+// src/app/page.js
 import styles from "./page.module.css";
+const baseURL = process.env.BASE_URL;
 
-export const metadata = {
-  title: 'Welcome',
-};
+export default async function Home() {
+    
+    const res = await fetch(`${baseURL}/videos`, {
+        cache:'no-store'
+    });
+
+    if (!res.ok) {
+        console.error("Failed to fetch videos:", res.status, res.statusText);
+        throw new Error("Failed to fetch videos"); 
+    }
+
+    const data = await res.json();
+    const videoFeeds = data.videos || []; 
+    const totalSlots = 9;
+    const placeholderCount = totalSlots - videoFeeds.length;
 
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    return (
+        <div className={styles.page}>
+            <main className={styles.main}>
+                <h1 className={styles.neonHeader}> ::. NETWORK VIEW .::</h1>
+
+                <div className={styles.container}>
+                    {videoFeeds.map((video) => (
+                        <div key={video.id} className={styles.videos}>
+                            <video 
+                                src={video.video_files[0]?.link} 
+                                className={styles.videoFeed}
+                                autoPlay 
+                                loop 
+                                muted
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    ))}
+                    
+                    {Array.from({ length: placeholderCount }).map((_, index) => (
+                        <div key={`placeholder-${index}`} className={styles.videos}>
+                           <p style={{ color: '#ff4444', fontSize: '1.5em', margin: 'auto' }}>[NODE OFFLINE]</p>
+                        </div>
+                    ))}
+
+                </div>
+            </main>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    );
 }
