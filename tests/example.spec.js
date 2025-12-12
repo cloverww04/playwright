@@ -1,12 +1,19 @@
 // @ts-check
+
 import { test, expect } from '@playwright/test';
-import 'dotenv/config';
+require('dotenv').config();
+
+
 const baseURL = process.env.BASE_URL;
+
+/**
+ * @type {import("playwright-core").APIRequestContext}
+ */
 let api;
 
 test.beforeAll(async ({ playwright }) => {
   api = await playwright.request.newContext({
-    baseURL: baseURL,
+    baseURL: baseURL || "http://localhost:3000",
   });
 });
 
@@ -15,9 +22,8 @@ test.afterAll(async () => {
 });
 
 test('UI loads and API returns videos', async ({ page }) => {
-  const baseURL = process.env.BASE_URL;
   // UI validation
-  await page.goto(baseURL);
+  await page.goto(`${baseURL}`);
   await expect(page).toHaveTitle(/Welcome/);
 
   // API validation (postcondition pattern)
